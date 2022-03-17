@@ -3,7 +3,7 @@ name: Greetings
 on: [pull_request, issues]
 
 jobs:
-  greeting:
+  greeting:s
     runs-on: ubuntu-latest
     permissions:
       issues: write
@@ -13,4 +13,6 @@ jobs:
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
         issue-message: 'Message that will be displayed on users first issue'
-        pr-message: 'Welcome to the Binder community. This is your first pull request, thanks for contributing to the project. Author : Kab Agouda'
+        pr-message: 'Welcome to the Binder community. This is your first pull request, thanks for contributing to the project. 
+        Author : [Kab Agouda](https:twitter.com/kabagouda)
+        '
