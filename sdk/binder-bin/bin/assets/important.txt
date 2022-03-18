@@ -1,0 +1,4 @@
+This folder is only intended to help create a binder project with some files already written.
+
+In this folder, some files may have the wrong extension but don't worry.
+For example, it should be main.dart but it contains replaceable things so it will generate errors, so we decided to call it .dart.txt.
