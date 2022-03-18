@@ -27,33 +27,42 @@ Future<void> executeCreate(
           ['create', projectName, '--template', 'web-simple', '--force'],
           runInShell: true, workingDirectory: Directory.current.path);
       if (process2.stdout.toString().contains('In order to get started')) {
-        //-------Creating of lib/main.dart
+        //    1-------Creating of lib/main.dart
         File(join(projectName, 'lib', 'main.dart'))
           ..createSync(recursive: true)
           ..writeAsStringSync('''//Coming soon\n\n ''');
 
-        //-------Update of pubspec.yaml
+        //   2-------ReWriting of pubspec.yaml
 
-        _pubspecContainingMessage(projectPath);
+        reWritePubspecYaml(projectPath);
 
-        //-------Update of bin/server.dart
+        //   3-------Update of bin/server.dart
 
         File(join(projectName, 'bin', 'server.dart'))
             .writeAsStringSync('''//Coming soon\n\n''');
 
-        //-------Update of test/server_test.dart
+        //    4-------Update of test/server_test.dart
         File(join(projectName, 'test', 'server_test.dart'))
             .writeAsStringSync('''//Coming soon\n\n''');
 
-        //-------Update of Readme.md
+        //    5-------Update of Readme.md
         File(join(projectName, 'README.md')).writeAsStringSync(
-            '''# $projectName\n\n This is a simple project to get started with Bouchira.\n\n## How to get started\n\n 1. Clone the repository\n 2. Run `pub get`\n 3. Run `bouchira run`\n 4. Enjoy!\n\n## Contributing\n\n If you have any questions or suggestions, please open an issue .\n\n## License\n\n This project is licensed under the MIT License.\n\n## Author\n\n [Kab  Agouda]('https://twitter.com/kabagouda')\n''');
+            '''# $projectName\n\n This is a simple project to get started with Binder.\n\n## How to get started\n\n 1. Clone the repository\n 2. Run `binder pub get`\n 3. Run `binder run`\n 4. Enjoy!\n\n## Contributing\n\n If you have any questions or suggestions, please open an issue .\n\n## License\n\n This project is licensed under the MIT License.\n\n## Author\n\n [Kab  Agouda]('https://twitter.com/kabagouda')\n''');
 
-        //--------//TODO : Update the web folder : index.html(bootsprap) , style.css(delete or not) and other . Perhaps use the builder
+        //     6--------Update web/index.html
+        reWriteIndexHtml(projectPath);
+        
+        //     7-------Remove web/style.css
+        //     9--------Replace web/main.dart
+        //     10-------Add live.js
+        //     11-------Add css Folder
+        //     12-------Add JS folder
+
+        ///TODO : Update the web folder : index.html(bootsprap) , style.css(delete or not) and other . Perhaps use the builder
 
         // -------Succesfully message
 
-        print(creatingMessage(
+        print(successfulMessage(
             projectName, projectPath, stopwatch.elapsedMilliseconds));
         stopwatch.stop();
       }
@@ -64,20 +73,9 @@ Future<void> executeCreate(
   exit(0);
 }
 
-//--------------------------------- Message ---------------------------------
-String creatingMessage(String projectName, String projectPath, int stopWatch) =>
-    '''
-All done!                              $stopWatch ms
-In order to run your project, type:
 
-  \$ cd $projectName
-  \$ binder run
-
-Your Project code is in ${join(projectName, 'lib', 'main.dart')}.
-
-''';
 //         For pubspecContainingMessage
-void _pubspecContainingMessage(String projectPath) {
+void reWritePubspecYaml(String projectPath) {
   String pubspecString = '';
   List pubspecListString =
       File(join(projectPath, 'pubspec.yaml')).readAsLinesSync();
@@ -89,7 +87,62 @@ void _pubspecContainingMessage(String projectPath) {
     pubspecString = pubspecString + line + '\n';
   }
   pubspecString = pubspecString.replaceAll('dev_dependencies:',
-      'dev_dependencies:\n  bouchra:\n    path: C:/Users/Kab/Desktop/dart_projects/bouchra');
+      'dev_dependencies:\n  binder:\n    git:\n        url: git://github.com/kabagouda/binder.git\n                path: package/binder');
   File(join(projectPath, 'pubspec.yaml'))
       .writeAsStringSync(pubspecString, mode: FileMode.write, flush: true);
 }
+
+void reWriteIndexHtml(String projectPath) {
+  String indexString =  File('bin/assets/web/index.html').readAsStringSync();
+  indexString = indexString.replaceAll('<head>', '<head>\n<link rel="stylesheet" href="style.css" kab>');
+  File(join(projectPath, 'web/index.html'))
+      .writeAsStringSync(indexString, mode: FileMode.write, flush: true);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//--------------------------------- Message ---------------------------------
+String successfulMessage(String projectName, String projectPath, int stopWatch) =>
+    '''
+All done!                              $stopWatch ms
+In order to run your project, type:
+
+  \$ cd $projectName
+  \$ binder run
+
+Your Project code is in ${join(projectName, 'lib', 'main.dart')}.
+
+''';

@@ -1,5 +1,6 @@
-import 'dart:io';
 import 'package:path/path.dart';
+// import 'package:http/http.dart' as http;
+import 'dart:io';
 import 'create.dart';
 import 'build.dart';
 import 'serve.dart';
@@ -29,7 +30,21 @@ void main(List<String> arguments) async {
       String projectPath = join(currentDirectory,
           projectName); // get the project path by joining the current directory and the project name.
       //  Execute the create function. It will create a new project.(create.dart)
-      executeCreate(projectName, currentDirectory, projectPath);
+      // executeCreate(projectName, currentDirectory, projectPath); // decomment
+     // Joke here------------
+     //--- strat
+//     final http.Response responseData = await http.get(strURL);
+// uint8list = responseData.bodyBytes;
+// var buffer = uint8list.buffer;
+// ByteData byteData = ByteData.view(buffer);
+// var tempDir = await getTemporaryDirectory();
+// File file = await File('${tempDir.path}/img').writeAsBytes(
+//     buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
+      
+      //--end
+      // File(join(projectPath, 'web/index.html')).writeAsStringSync('');
+      // print(indexString);
+      // executeCreate(projectName, currentDirectory, projectPath);
     }
   }
 
@@ -100,11 +115,11 @@ Project
   analyze           Analyze the project's Dart code.
   build             Builds the web project in release mode (Default )..
   clean             Delete the build/ and .dart_tool/ directories.
-  create            Create a new Flutter project.
+  create            Create a new Binder project.
   format            Idiomatically format Dart source code.
   pub               Commands for managing Binder packages.
   run               Run your Binder web application in development mode . It will run the web page in the browser.
-  test              Run Flutter unit tests for the current project.
+  test              Run Binder unit tests for the current project.
 
 
 Run "binder help <command>" for more information about a command.
