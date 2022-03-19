@@ -11,7 +11,7 @@ dependencies:
   # build_runner: ^2.1.4
   # build_web_compilers: ^3.2.1
   yaml: ^3.1.0
-  # browser_launcher: ^1.0.0
+  browser_launcher: ^1.0.0
   http: ^0.13.4
 
 dev_dependencies:
