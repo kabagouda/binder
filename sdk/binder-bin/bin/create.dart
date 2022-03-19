@@ -1,6 +1,10 @@
-import 'dart:io' show Directory, File, FileMode, Process, exit;
+import 'dart:io' show Directory, File, Process, exit;
+import 'dart:typed_data';
+import 'package:http/http.dart' as http;
 
 import 'package:path/path.dart';
+import 'project_string/project_string.dart';
+
 Future<void> executeCreate(
     String projectName, String currentDirectory, String projectPath) async {
   //1- Verify if directory exist
@@ -9,140 +13,234 @@ Future<void> executeCreate(
   }
   //2- Create directory
   else {
-    print('Creating...');
-    var stopwatch = Stopwatch()..start(); // listen to the time
-    var process = await Process.run(
-        'dart',
-        [
-          'create',
-          projectName,
-          '--template',
-          'server-shelf',
-        ],
-        runInShell: true,
-        workingDirectory: Directory.current.path);
-    //Verify if project is created successfully . (In order to get started is in message normally)
-    if (process.stdout.toString().contains('In order to get started')) {
-      var process2 = await Process.run('dart',
-          ['create', projectName, '--template', 'web-simple', '--force'],
-          runInShell: true, workingDirectory: Directory.current.path);
-      if (process2.stdout.toString().contains('In order to get started')) {
-        //    1-------Creating of lib/main.dart
-        File(join(projectName, 'lib', 'main.dart'))
-          ..createSync(recursive: true)
-          ..writeAsStringSync('''//Coming soon\n\n ''');
+    print('Creating project $projectName... ');
+    var stopwatch1 = Stopwatch()..start(); // listen to the time
+    //    1-------Creating of bin
+    addBinServer(projectPath, projectName);
+    //   2-------Creating of lib
+    addLibMain(projectPath, projectName);
+    //   3-------Creating of test
+    addTestServer(projectPath, projectName);
+    //   3-------Creating of web
+    addWebIndexHtml(projectPath, projectName); // add index.html
+    addIcon(projectPath); // add icon
+    addWebMain(projectPath, projectName); // add main.dart
+    addWebCssBinderCSS(projectPath, projectName); // add BinderCSS.css
+    addWebJsBinderJS(projectPath, projectName); // add BinderJS.js
+    addWebJsLiveJS(projectPath, projectName); // add liveJS.js
 
-        //   2-------ReWriting of pubspec.yaml
+    //   4-------Creating of others stuff
+    addDotDockerignore(projectPath, projectName); // add .dockerignore
+    addDotGitignore(projectPath, projectName); // add .gitignore
+    addAnalysisOptionsYaml(
+        projectPath, projectName); // add analysis_options.yaml
+    addCHANGELOGMd(projectPath, projectName); // add CHANGELOG.md
+    addDockerfile(projectPath, projectName); // add Dockerfile
+    addREADMEMd(projectPath, projectName); // add readme.md
+    addPubspecYaml(projectPath, projectName); // add pubspec.yaml
 
-        reWritePubspecYaml(projectPath);
+    print('''
+  bin/server.dart
+  lib/main.dart
+  test/server_test.dart
+  web/index.html
+  web/main.dart
+  web/css/bindercss.css
+  web/js/binderjs.js
+  web/js/livejs.js
+  .dockerignore
+  .gitignore
+  analysis_options.yaml
+  CHANGELOG.md
+  Dockerfile
+  README.md
+  pubspec.yaml
+    ''');
+// --------------Pub get
+    print('Running pub get...');
+    final stopwatch2 = Stopwatch()..start();
+    dartPubGet(projectName);
+    // -------Succesfully message
+    print('Running "dart pub get" in app...                                ${stopwatch2.elapsedMilliseconds} ms');
+    print(successfulMessage(
+        projectName, projectPath, stopwatch1.elapsedMilliseconds));
+    stopwatch1.stop();
+  }
+}
 
-        //   3-------Update of bin/server.dart
-
-        File(join(projectName, 'bin', 'server.dart'))
-            .writeAsStringSync('''//Coming soon\n\n''');
-
-        //    4-------Update of test/server_test.dart
-        File(join(projectName, 'test', 'server_test.dart'))
-            .writeAsStringSync('''//Coming soon\n\n''');
-
-        //    5-------Update of Readme.md
-        File(join(projectName, 'README.md')).writeAsStringSync(
-            '''# $projectName\n\n This is a simple project to get started with Binder.\n\n## How to get started\n\n 1. Clone the repository\n 2. Run `binder pub get`\n 3. Run `binder run`\n 4. Enjoy!\n\n## Contributing\n\n If you have any questions or suggestions, please open an issue .\n\n## License\n\n This project is licensed under the MIT License.\n\n## Author\n\n [Kab  Agouda]('https://twitter.com/kabagouda')\n''');
-
-        //     6--------Update web/index.html
-        reWriteIndexHtml(projectPath);
-        
-        //     7-------Remove web/style.css
-        //     9--------Replace web/main.dart
-        //     10-------Add live.js
-        //     11-------Add css Folder
-        //     12-------Add JS folder
-
-        ///TODO : Update the web folder : index.html(bootsprap) , style.css(delete or not) and other . Perhaps use the builder
-
-        // -------Succesfully message
-
-        print(successfulMessage(
-            projectName, projectPath, stopwatch.elapsedMilliseconds));
-        stopwatch.stop();
-      }
-    } else {
-      print('Something went wrong when creating the project');
+void dartPubGet(String projectName) {
+  var process = Process.runSync('dart', ['pub', 'get'],
+      runInShell: true,
+      workingDirectory: join(Directory.current.path, projectName));
+  if (process.stderr.toString().contains('exit code: 128')) {
+    dartPubGet(
+        projectName); // repeat it because some time `dart pub get` provide error 128 for no reason .
+  } else if (process.stdout
+          .toString()
+          .contains('Could not resolve URL "https://pub.dartlang.org"') ||
+      process.stdout.toString().contains('exit code 69')) {
+    print(process.stdout);
+    try {
+      exit(0);
+    } catch (e) {
+      // print(e);
+      exit(0);
+    } finally {
+      exit(0);
+    }
+  } else if (process.stderr.toString().contains('exit code 1') ||
+      process.stdout.toString().contains('exit code 1')) {
+    print('Pub get failed');
+    try {
+      exit(0);
+    } catch (e) {
+      // print(e);
+      exit(0);
+    } finally {
+      exit(0);
     }
   }
-  exit(0);
 }
 
-
-//         For pubspecContainingMessage
-void reWritePubspecYaml(String projectPath) {
-  String pubspecString = '';
-  List pubspecListString =
-      File(join(projectPath, 'pubspec.yaml')).readAsLinesSync();
-  // List pubspecListString2 = _pubspecListString;
-  pubspecListString.removeWhere((element) => element.contains('build_runner'));
-  pubspecListString
-      .removeWhere((element) => element.contains('build_web_compilers'));
-  for (var line in pubspecListString) {
-    pubspecString = pubspecString + line + '\n';
-  }
-  pubspecString = pubspecString.replaceAll('dev_dependencies:',
-      'dev_dependencies:\n  binder:\n    git:\n        url: git://github.com/kabagouda/binder.git\n                path: package/binder');
-  File(join(projectPath, 'pubspec.yaml'))
-      .writeAsStringSync(pubspecString, mode: FileMode.write, flush: true);
+void addBinServer(String projectPath, String projectName) {
+  String _string = getBinServer();
+  _string = _string.replaceAll('projectName', projectName);
+  File(join(projectPath, 'bin/server.dart'))
+    ..createSync(recursive: true)
+    ..writeAsStringSync(_string);
 }
 
-void reWriteIndexHtml(String projectPath) {
-  String indexString =  File('bin/assets/web/index.html').readAsStringSync();
-  indexString = indexString.replaceAll('<head>', '<head>\n<link rel="stylesheet" href="style.css" kab>');
+void addLibMain(String projectPath, String projectName) {
+  String _string = getLibMain();
+  _string = _string.replaceAll('projectName', projectName);
+  File(join(projectPath, 'lib/main.dart'))
+    ..createSync(recursive: true)
+    ..writeAsStringSync(_string);
+}
+
+void addTestServer(String projectPath, String projectName) {
+  String _string = getTestServer();
+  _string = _string.replaceAll('projectName', projectName);
+  File(join(projectPath, 'test/server_test.dart'))
+    ..createSync(recursive: true)
+    ..writeAsStringSync(_string);
+}
+
+void addWebIndexHtml(String projectPath, String projectName) {
+  String _string = getWebIndexHtml();
+  _string = _string.replaceAll('projectName', projectName);
   File(join(projectPath, 'web/index.html'))
-      .writeAsStringSync(indexString, mode: FileMode.write, flush: true);
+    ..createSync(recursive: true)
+    ..writeAsStringSync(_string);
 }
 
+void addIcon(String projectPath) async {
+  String binderLogoUrl =
+      'https://user-images.githubusercontent.com/64534846/159020857-25d6cdd5-d18a-4672-a430-024a7eea5a55.png';
+  final http.Response responseData = await http.get(Uri.parse(binderLogoUrl));
+  var uint8list = responseData.bodyBytes;
+  var buffer = uint8list.buffer;
+  ByteData byteData = ByteData.view(buffer);
+  File(join(projectPath, 'web/icon.png'))
+    ..createSync(recursive: true)
+    ..writeAsBytesSync(
+        buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
+}
 
+void addWebMain(String projectPath, String projectName) {
+  String _string = getWebMain();
+  _string = _string.replaceAll('projectName', projectName);
+  File(join(projectPath, 'web/main.dart'))
+    ..createSync(recursive: true)
+    ..writeAsStringSync(_string);
+}
 
+void addWebCssBinderCSS(String projectPath, String projectName) {
+  String _string = getWebCssBinderCSS();
+  _string = _string.replaceAll('projectName', projectName);
+  File(join(projectPath, 'web/css/bindercss.css'))
+    ..createSync(recursive: true)
+    ..writeAsStringSync(_string);
+}
 
+void addWebJsBinderJS(String projectPath, String projectName) {
+  String _string = getWebJsBinderJS();
+  _string = _string.replaceAll('projectName', projectName);
+  File(join(projectPath, 'web/js/binderjs.js'))
+    ..createSync(recursive: true)
+    ..writeAsStringSync(_string);
+}
 
+void addWebJsLiveJS(String projectPath, String projectName) {
+  String _string = getWebJsLiveJS();
+  _string = _string.replaceAll('projectName', projectName);
+  File(join(projectPath, 'web/js/live.js'))
+    ..createSync(recursive: true)
+    ..writeAsStringSync(_string);
+}
 
+void addDotDockerignore(String projectPath, String projectName) {
+  String _string = getDotDockerignore();
+  _string = _string.replaceAll('projectName', projectName);
+  File(join(projectPath, '.dockerignore'))
+    ..createSync(recursive: true)
+    ..writeAsStringSync(_string);
+}
 
+void addDotGitignore(String projectPath, String projectName) {
+  String _string = getDotGitignore();
+  _string = _string.replaceAll('projectName', projectName);
+  File(join(projectPath, '.gitignore'))
+    ..createSync(recursive: true)
+    ..writeAsStringSync(_string);
+}
 
+void addAnalysisOptionsYaml(String projectPath, String projectName) {
+  String _string = getAnalysisOptionsYaml();
+  _string = _string.replaceAll('projectName', projectName);
+  File(join(projectPath, 'analysis_options.yaml'))
+    ..createSync(recursive: true)
+    ..writeAsStringSync(_string);
+}
 
+void addCHANGELOGMd(String projectPath, String projectName) {
+  String _string = getCHANGELOGMd();
+  _string = _string.replaceAll('projectName', projectName);
+  File(join(projectPath, 'CHANGELOG.md'))
+    ..createSync(recursive: true)
+    ..writeAsStringSync(_string);
+}
 
+void addDockerfile(String projectPath, String projectName) {
+  String _string = getDockerfile();
+  _string = _string.replaceAll('projectName', projectName);
+  File(join(projectPath, 'Dockerfile'))
+    ..createSync(recursive: true)
+    ..writeAsStringSync(_string);
+}
 
+void addPubspecYaml(String projectPath, String projectName) {
+  String _string = getPubspecYaml();
+  _string = _string.replaceAll('projectName', projectName);
+  File(join(projectPath, 'pubspec.yaml'))
+    ..createSync(recursive: true)
+    ..writeAsStringSync(_string);
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+void addREADMEMd(String projectPath, String projectName) {
+  String _string = getREADMEMd();
+  _string = _string.replaceAll('projectName', projectName);
+  File(join(projectPath, 'README.md'))
+    ..createSync(recursive: true)
+    ..writeAsStringSync(_string);
+}
 
 //--------------------------------- Message ---------------------------------
-String successfulMessage(String projectName, String projectPath, int stopWatch) =>
-    '''
-All done!                              $stopWatch ms
+String successfulMessage(
+        String projectName, String projectPath, int stopWatch) =>
+    '''All done!                         
 In order to run your project, type:
-
   \$ cd $projectName
   \$ binder run
-
-Your Project code is in ${join(projectName, 'lib', 'main.dart')}.
-
 ''';
+// Your web application code is in ${join(projectName, 'lib', 'main.dart')} and server code is in ${join(projectName, 'bin', 'server.dart')}

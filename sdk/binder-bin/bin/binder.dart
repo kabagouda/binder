@@ -1,5 +1,6 @@
+
 import 'package:path/path.dart';
-// import 'package:http/http.dart' as http;
+
 import 'dart:io';
 import 'create.dart';
 import 'build.dart';
@@ -30,21 +31,7 @@ void main(List<String> arguments) async {
       String projectPath = join(currentDirectory,
           projectName); // get the project path by joining the current directory and the project name.
       //  Execute the create function. It will create a new project.(create.dart)
-      // executeCreate(projectName, currentDirectory, projectPath); // decomment
-     // Joke here------------
-     //--- strat
-//     final http.Response responseData = await http.get(strURL);
-// uint8list = responseData.bodyBytes;
-// var buffer = uint8list.buffer;
-// ByteData byteData = ByteData.view(buffer);
-// var tempDir = await getTemporaryDirectory();
-// File file = await File('${tempDir.path}/img').writeAsBytes(
-//     buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
-      
-      //--end
-      // File(join(projectPath, 'web/index.html')).writeAsStringSync('');
-      // print(indexString);
-      // executeCreate(projectName, currentDirectory, projectPath);
+      executeCreate(projectName, currentDirectory, projectPath); 
     }
   }
 

@@ -1,5 +1,0 @@
-import 'package:krimmer2/main.dart' as entrypoint;
-
-Future<void> main() async {
-  entrypoint.main();
-}
