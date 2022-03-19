@@ -45,9 +45,9 @@ Future<void> executeCreate(
   test/server_test.dart
   web/index.html
   web/main.dart
-  web/css/bindercss.css
-  web/js/binderjs.js
-  web/js/livejs.js
+  web/css/binder-css.css
+  web/js/binder-js.js
+  web/js/live-js.js
   .dockerignore
   .gitignore
   analysis_options.yaml
@@ -179,7 +179,7 @@ void addWebJsBinderJS(String projectPath, String projectName) async{
 void addWebJsLiveJS(String projectPath, String projectName) {
   String _string = getWebJsLiveJS();
   _string = _string.replaceAll('projectName', projectName);
-  File(join(projectPath, 'web/js/live.js'))
+  File(join(projectPath, 'web/js/live-js.js'))
     ..createSync(recursive: true)
     ..writeAsStringSync(_string);
 }

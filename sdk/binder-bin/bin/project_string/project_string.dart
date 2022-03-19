@@ -1,7 +1,7 @@
 export '.dockerignore.dart';
 export '.gitignore.dart';
 export 'CHANGELOG.md.dart';
-export 'Dockerfile.dart';
+export '_dockerfile.dart';
 export 'analysis_options.yaml.dart';
 export 'bin_server.dart';
 export 'lib_main.dart';
