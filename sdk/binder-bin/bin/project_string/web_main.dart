@@ -1,9 +1,10 @@
 String getWebMain() => '''
-import 'package:projectName/main.dart' as entrypoint;
+import 'dart:html' ;
 
-Future<void> main() async {
-  entrypoint.main();
-}
+void main() {
+  document.body?.children.addAll([
+    DivElement()..text = 'Hello World, from Dart!',
+  ]);
 
 ''';	
 

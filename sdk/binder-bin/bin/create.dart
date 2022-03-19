@@ -155,18 +155,23 @@ void addWebMain(String projectPath, String projectName) {
     ..writeAsStringSync(_string);
 }
 
-void addWebCssBinderCSS(String projectPath, String projectName) {
-  String _string = getWebCssBinderCSS();
-  _string = _string.replaceAll('projectName', projectName);
-  File(join(projectPath, 'web/css/bindercss.css'))
+void addWebCssBinderCSS(String projectPath, String projectName) async{
+  String bindercssUrl =
+      'https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css';
+  final http.Response responseData = await http.get(Uri.parse(bindercssUrl));
+  var _string = responseData.body;
+  File(join(projectPath, 'web/css/binder-css.css'))
     ..createSync(recursive: true)
     ..writeAsStringSync(_string);
 }
 
-void addWebJsBinderJS(String projectPath, String projectName) {
-  String _string = getWebJsBinderJS();
-  _string = _string.replaceAll('projectName', projectName);
-  File(join(projectPath, 'web/js/binderjs.js'))
+
+void addWebJsBinderJS(String projectPath, String projectName) async{
+ String binderjsUrl =
+      'https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js';
+  final http.Response responseData = await http.get(Uri.parse(binderjsUrl));
+  var _string = responseData.body;
+  File(join(projectPath, 'web/js/binder-js.js'))
     ..createSync(recursive: true)
     ..writeAsStringSync(_string);
 }

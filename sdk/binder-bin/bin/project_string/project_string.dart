@@ -8,8 +8,6 @@ export 'lib_main.dart';
 export 'pubspec.yaml.dart';
 export 'readme.md.dart';
 export 'test_server.dart';
-export 'web_css_binder.css.dart';
 export 'web_index.html.dart';
-export 'web_js_binder.js.dart';
 export 'web_js_live.js.dart';
 export 'web_main.dart';

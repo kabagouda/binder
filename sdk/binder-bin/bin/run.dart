@@ -16,16 +16,20 @@ void executeRun() async {
   process.stdout.transform(Utf8Decoder()).listen((element) async {
     var temp1 = element.trim().contains('[INFO] Succeeded after');
     var temp2 = element.trim().contains('Serving `web`');
-
+    var alreadyLaunched = false;
     if (temp1 == true) {
       print(element.trim());
-      print('Your website is running on http://localhost:$port');
-      await Chrome.startWithDebugPort(['http://localhost:$port'], debugPort: 0);
-      print('Launched Chrome with a debug port');
+      if (alreadyLaunched == false) {
+        alreadyLaunched = true;
+        print('Your website is running on http://localhost:$port');
+        await Chrome.startWithDebugPort(['http://localhost:$port'],
+            debugPort: 0);
+        print('Launched Chrome with a debug port');
+      }
     } else if (temp2 == true) {
       //-------------I don't know yet. Actually i think it'sfor smth skip
       //Nothing just skipped
-    }  else if (element.trim().isEmpty) {
+    } else if (element.trim().isEmpty) {
       //-------------I don't know yet. Actually i think it'sfor smth skip
       //Nothing just skipped
     } else {
