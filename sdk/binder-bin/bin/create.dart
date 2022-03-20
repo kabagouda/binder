@@ -23,10 +23,10 @@ Future<void> executeCreate(
     addTestServer(projectPath, projectName);
     //   3-------Creating of web
     addWebIndexHtml(projectPath, projectName); // add index.html
-    addIcon(projectPath); // add icon
+    await addIcon(projectPath); // add icon
     addWebMain(projectPath, projectName); // add main.dart
-    addWebCssBinderCSS(projectPath, projectName); // add BinderCSS.css
-    addWebJsBinderJS(projectPath, projectName); // add BinderJS.js
+    await addWebCssBinderCSS(projectPath, projectName); // add BinderCSS.css
+    await addWebJsBinderJS(projectPath, projectName); // add BinderJS.js
     // addWebJsHotReloader(projectPath, projectName); // add liveJS.js
 
     //   4-------Creating of others stuff
@@ -61,20 +61,20 @@ Future<void> executeCreate(
     final stopwatch2 = Stopwatch()..start();
     dartPubGet(projectName);
     // -------Succesfully message
-    print('Running "dart pub get" in app...                                ${stopwatch2.elapsedMilliseconds} ms');
+    print(
+        'Running "dart pub get" in app...                                ${stopwatch2.elapsedMilliseconds} ms');
     print(successfulMessage(
         projectName, projectPath, stopwatch1.elapsedMilliseconds));
     stopwatch1.stop();
     // quit the program
     try {
-        exit(0);
-      } catch (e) {
-        // print(e);
-        exit(0);
-      } 
-      finally {
-        exit(0);
-      }
+      exit(0);
+    } catch (e) {
+      // print(e);
+      exit(0);
+    } finally {
+      exit(0);
+    }
   }
 }
 
@@ -144,17 +144,22 @@ void addWebIndexHtml(String projectPath, String projectName) {
     ..writeAsStringSync(_string);
 }
 
-void addIcon(String projectPath) async {
-  String binderLogoUrl =
-      'https://user-images.githubusercontent.com/64534846/159020857-25d6cdd5-d18a-4672-a430-024a7eea5a55.png';
-  final http.Response responseData = await http.get(Uri.parse(binderLogoUrl));
-  var uint8list = responseData.bodyBytes;
-  var buffer = uint8list.buffer;
-  ByteData byteData = ByteData.view(buffer);
-  File(join(projectPath, 'web/icon.png'))
-    ..createSync(recursive: true)
-    ..writeAsBytesSync(
-        buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
+Future<void> addIcon(String projectPath) async {
+  try {
+    String binderLogoUrl =
+        'https://user-images.githubusercontent.com/64534846/159020857-25d6cdd5-d18a-4672-a430-024a7eea5a55.png';
+    final http.Response responseData = await http.get(Uri.parse(binderLogoUrl));
+    var uint8list = responseData.bodyBytes;
+    var buffer = uint8list.buffer;
+    ByteData byteData = ByteData.view(buffer);
+    File(join(projectPath, 'web/icon.png'))
+      ..createSync(recursive: true)
+      ..writeAsBytesSync(
+          buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
+  } on Exception catch (e) {
+     print('Unable to add binder-css.css');
+    print(e);
+  }
 }
 
 void addWebMain(String projectPath, String projectName) {
@@ -165,25 +170,34 @@ void addWebMain(String projectPath, String projectName) {
     ..writeAsStringSync(_string);
 }
 
-void addWebCssBinderCSS(String projectPath, String projectName) async{
-  String bindercssUrl =
-      'https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css';
-  final http.Response responseData = await http.get(Uri.parse(bindercssUrl));
-  var _string = responseData.body;
-  File(join(projectPath, 'web/css/binder-css.css'))
-    ..createSync(recursive: true)
-    ..writeAsStringSync(_string);
+Future<void> addWebCssBinderCSS(String projectPath, String projectName) async {
+  try {
+    String bindercssUrl =
+        'https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css';
+    final http.Response responseData = await http.get(Uri.parse(bindercssUrl));
+    var _string = responseData.body;
+    File(join(projectPath, 'web/css/binder-css.css'))
+      ..createSync(recursive: true)
+      ..writeAsStringSync(_string);
+  } on Exception catch (e) {
+     print('Unable to add binder-css.css');
+    print(e);
+  }
 }
 
-
-void addWebJsBinderJS(String projectPath, String projectName) async{
- String binderjsUrl =
-      'https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js';
-  final http.Response responseData = await http.get(Uri.parse(binderjsUrl));
-  var _string = responseData.body;
-  File(join(projectPath, 'web/js/binder-js.js'))
-    ..createSync(recursive: true)
-    ..writeAsStringSync(_string);
+Future<void> addWebJsBinderJS(String projectPath, String projectName) async {
+  try {
+    String binderjsUrl =
+        'https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js';
+    final http.Response responseData = await http.get(Uri.parse(binderjsUrl));
+    var _string = responseData.body;
+    File(join(projectPath, 'web/js/binder-js.js'))
+      ..createSync(recursive: true)
+      ..writeAsStringSync(_string);
+  }on Exception catch (e) {
+    print('Unable to add binder-js.js');
+    print(e);
+  }
 }
 
 // void addWebJsHotReloader(String projectPath, String projectName) {
@@ -217,6 +231,7 @@ void addAnalysisOptionsYaml(String projectPath, String projectName) {
     ..createSync(recursive: true)
     ..writeAsStringSync(_string);
 }
+
 void addBuildYaml(projectPath, projectName) {
   String _string = getBuildYaml();
   File(join(projectPath, 'build.yaml'))

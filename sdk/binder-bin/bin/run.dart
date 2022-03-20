@@ -4,8 +4,6 @@ import 'dart:io' show Directory, File, Process;
 import 'package:ansicolor/ansicolor.dart';
 import 'package:browser_launcher/browser_launcher.dart';
 import 'package:path/path.dart';
-
-import 'project_string/build.yaml.dart';
 import 'project_string/web_js_live.js.dart';
 
 void executeRun() async {
@@ -15,10 +13,10 @@ void executeRun() async {
   moveAllFilesAndFolderFromWebToBuild();
   print('Serving the web generated file...');
   var port = '8884';
-  var web = 'build:$port';
+  var web = 'build:$port';  // web is changed to build
   var alreadyLaunched = false;
   var process = await Process.start('dart',
-      ['run', 'build_runner', 'serve', web, '--delete-conflicting-outputs'],
+      ['run', 'build_runner', 'serve', web, '--delete-conflicting-outputs' ,'--use-polling-watcher'],
       runInShell: true, workingDirectory: Directory.current.path);
   process.stdout.transform(Utf8Decoder()).listen((element) async {
     var temp1 = element.trim().contains('[INFO] Succeeded after');
@@ -106,7 +104,7 @@ void moveAllFilesAndFolderFromWebToBuild() {
   Directory(join(Directory.current.path, 'web')).listSync().forEach((element) {
     if (element is File) {
       File(join(Directory.current.path, 'build', basename(element.path)))
-          .writeAsBytesSync(element.readAsBytesSync());
+          ..createSync(recursive: true)..writeAsBytesSync(element.readAsBytesSync());
     } else if (element is Directory) {
       Directory(join(Directory.current.path, 'build', basename(element.path)))
           .createSync(recursive: true);
