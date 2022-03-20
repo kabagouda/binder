@@ -18,7 +18,9 @@ String getWebIndexHtml() => '''
     <!-- Binder CSS -->
     <link href="css/binder-css.css" rel="stylesheet" />
     <!-- Live reload -->
-    <script src="js/live-js.js"></script>
+    <script src="js/.hotreloader.js"></script>
+    <!-- Live reload notifier -->
+    <script src="js/.hotreloader_notifier.js"></script>
     <!-- Main code  -->
     <script defer src="main.dart.js"></script>
   </head>

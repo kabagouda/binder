@@ -1,3 +1,6 @@
+// Here i can not write literal Dockerfile.dart because compiler will complains thinking it's a Dockerfile real file 
+// and not a Dart file.
+
 String getDockerfile() => '''
 # Use latest stable channel SDK.
 FROM dart:stable AS build

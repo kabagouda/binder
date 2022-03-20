@@ -27,13 +27,14 @@ Future<void> executeCreate(
     addWebMain(projectPath, projectName); // add main.dart
     addWebCssBinderCSS(projectPath, projectName); // add BinderCSS.css
     addWebJsBinderJS(projectPath, projectName); // add BinderJS.js
-    addWebJsLiveJS(projectPath, projectName); // add liveJS.js
+    // addWebJsHotReloader(projectPath, projectName); // add liveJS.js
 
     //   4-------Creating of others stuff
     addDotDockerignore(projectPath, projectName); // add .dockerignore
     addDotGitignore(projectPath, projectName); // add .gitignore
     addAnalysisOptionsYaml(
         projectPath, projectName); // add analysis_options.yaml
+    addBuildYaml(projectPath, projectName); // add build.yaml
     addCHANGELOGMd(projectPath, projectName); // add CHANGELOG.md
     addDockerfile(projectPath, projectName); // add Dockerfile
     addREADMEMd(projectPath, projectName); // add readme.md
@@ -47,7 +48,6 @@ Future<void> executeCreate(
   web/main.dart
   web/css/binder-css.css
   web/js/binder-js.js
-  web/js/live-js.js
   .dockerignore
   .gitignore
   analysis_options.yaml
@@ -65,6 +65,16 @@ Future<void> executeCreate(
     print(successfulMessage(
         projectName, projectPath, stopwatch1.elapsedMilliseconds));
     stopwatch1.stop();
+    // quit the program
+    try {
+        exit(0);
+      } catch (e) {
+        // print(e);
+        exit(0);
+      } 
+      finally {
+        exit(0);
+      }
   }
 }
 
@@ -176,13 +186,13 @@ void addWebJsBinderJS(String projectPath, String projectName) async{
     ..writeAsStringSync(_string);
 }
 
-void addWebJsLiveJS(String projectPath, String projectName) {
-  String _string = getWebJsLiveJS();
-  _string = _string.replaceAll('projectName', projectName);
-  File(join(projectPath, 'web/js/live-js.js'))
-    ..createSync(recursive: true)
-    ..writeAsStringSync(_string);
-}
+// void addWebJsHotReloader(String projectPath, String projectName) {
+//   String _string = getWebJsLiveJS();
+//   _string = _string.replaceAll('projectName', projectName);
+//   File(join(projectPath, 'web/js/.hotreloader.js'))
+//     ..createSync(recursive: true)
+//     ..writeAsStringSync(_string);
+// }
 
 void addDotDockerignore(String projectPath, String projectName) {
   String _string = getDotDockerignore();
@@ -204,6 +214,12 @@ void addAnalysisOptionsYaml(String projectPath, String projectName) {
   String _string = getAnalysisOptionsYaml();
   _string = _string.replaceAll('projectName', projectName);
   File(join(projectPath, 'analysis_options.yaml'))
+    ..createSync(recursive: true)
+    ..writeAsStringSync(_string);
+}
+void addBuildYaml(projectPath, projectName) {
+  String _string = getBuildYaml();
+  File(join(projectPath, 'build.yaml'))
     ..createSync(recursive: true)
     ..writeAsStringSync(_string);
 }

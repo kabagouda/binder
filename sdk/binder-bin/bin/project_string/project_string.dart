@@ -4,6 +4,7 @@ export 'CHANGELOG.md.dart';
 export '_dockerfile.dart';
 export 'analysis_options.yaml.dart';
 export 'bin_server.dart';
+export 'build.yaml.dart';
 export 'lib_main.dart';
 export 'pubspec.yaml.dart';
 export 'readme.md.dart';
