@@ -1,5 +1,5 @@
 import 'dart:convert' show Utf8Decoder;
-import 'dart:io' show Directory, File, Process;
+import 'dart:io' show Directory, File, Platform, Process;
 
 import 'package:ansicolor/ansicolor.dart';
 import 'package:browser_launcher/browser_launcher.dart';
@@ -9,37 +9,53 @@ import 'project_string/web_js_live.js.dart';
 void executeRun() async {
   print('Running the project...');
   // Move web content to build folder.
-  print(' Copying web content to build folder...');	
+  print(' Copying web content to build folder...');
   moveAllFilesAndFolderFromWebToBuild();
   print('Serving the web generated file...');
   var port = '8884';
-  var web = 'build:$port';  // web is changed to build
+  var web = 'build:$port'; // web is changed to build
   var alreadyLaunched = false;
-  var process = await Process.start('dart',
-      ['run', 'build_runner', 'serve', web, '--delete-conflicting-outputs' ,'--use-polling-watcher'],
-      runInShell: true, workingDirectory: Directory.current.path);
+  var process = await Process.start(
+      'dart',
+      [
+        'run',
+        'build_runner',
+        'serve',
+        web,
+        '--delete-conflicting-outputs',
+        '--use-polling-watcher'
+      ],
+      runInShell: true,
+      workingDirectory: Directory.current.path);
   process.stdout.transform(Utf8Decoder()).listen((element) async {
     var temp1 = element.trim().contains('[INFO] Succeeded after');
     var temp2 = element.trim().contains('Serving `web`');
+    var temp3 = element.trim().contains('build_web_compilers:entrypoint');
 
     if (temp1 == true) {
       print(colorString(element.trim()));
       // Update the hot reloader notifier
       if (alreadyLaunched == false) {
         print('Your website is running on http://localhost:$port .');
-        await Chrome.startWithDebugPort(['http://localhost:$port'],
-            debugPort: 0);
-        print('Launched Chrome with a debug port');
+        // await Chrome.startWithDebugPort(['http://localhost:$port'],
+        //     debugPort: 0);
+        // print('Launched Chrome with a debug port');
+        // Launched default browser in windows
+        print('Launching the default browser...');
+        openBrowser('http://localhost:$port');
         alreadyLaunched = true;
         // Hot reloader and notifier
         addWebJsHotReloader();
-        File(join(Directory.current.path, 'web/js/.hotreloader_notifier.js'))
+        File(join(Directory.current.path, 'build/js/.hotreloader_notifier.js'))
           ..createSync(recursive: true)
           ..writeAsStringSync('//' + DateTime.now().toString());
       }
       updateHotNotifier();
       alreadyLaunched = true;
     } else if (temp2 == true) {
+      //-------------I don't know yet. Actually i think it'sfor smth skip
+      //Nothing just skipped
+    } else if (temp3 == true) {
       //-------------I don't know yet. Actually i think it'sfor smth skip
       //Nothing just skipped
     } else if (element.trim().isEmpty) {
@@ -86,7 +102,6 @@ void addWebJsHotReloader() {
 //     ..writeAsStringSync(_string);
 // }
 
-
 Future<void> updateHotNotifier() async {
   String notifierContent =
       File(join(Directory.current.path, 'build/js/.hotreloader_notifier.js'))
@@ -104,7 +119,8 @@ void moveAllFilesAndFolderFromWebToBuild() {
   Directory(join(Directory.current.path, 'web')).listSync().forEach((element) {
     if (element is File) {
       File(join(Directory.current.path, 'build', basename(element.path)))
-          ..createSync(recursive: true)..writeAsBytesSync(element.readAsBytesSync());
+        ..createSync(recursive: true)
+        ..writeAsBytesSync(element.readAsBytesSync());
     } else if (element is Directory) {
       Directory(join(Directory.current.path, 'build', basename(element.path)))
           .createSync(recursive: true);
@@ -119,6 +135,16 @@ void moveAllFilesAndFolderFromWebToBuild() {
   });
 }
 
+// Open defaut browser with url on all platforms
+Future<void> openBrowser(String url) async {
+  if (Platform.isWindows) {
+    await Process.run('explorer', [url], runInShell: true);
+  } else if (Platform.isMacOS) {
+    await Process.run('open', [url], runInShell: true);
+  } else if (Platform.isLinux) {
+    await Process.run('xdg-open', [url], runInShell: true);
+  }
+}
 
 // String runHelpMessage() => '''
 // 'Usage: bouchra <command> [<args>]';
