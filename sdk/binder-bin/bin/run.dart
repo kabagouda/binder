@@ -2,7 +2,7 @@ import 'dart:convert' show Utf8Decoder;
 import 'dart:io' show Directory, File, Platform, Process;
 
 import 'package:ansicolor/ansicolor.dart';
-import 'package:browser_launcher/browser_launcher.dart';
+// import 'package:browser_launcher/browser_launcher.dart';
 import 'package:path/path.dart';
 import 'project_string/web_js_live.js.dart';
 
@@ -109,7 +109,7 @@ Future<void> updateHotNotifier() async {
   var diff = DateTime.now()
       .difference(DateTime.tryParse(notifierContent.replaceAll('//', ''))!)
       .inMilliseconds;
-  if (diff > 5000) {
+  if (diff > 7000) {
     File(join(Directory.current.path, 'build/js/.hotreloader_notifier.js'))
         .writeAsStringSync('//' + DateTime.now().toString());
   }
