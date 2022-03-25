@@ -1,6 +1,6 @@
 String getLibMain() => '''
 // Coming soon
-import 'binder/bootstrap.dart';
+import 'package:binder/bootstrap.dart';
 
 void main() {
   runApp(MyApp());
