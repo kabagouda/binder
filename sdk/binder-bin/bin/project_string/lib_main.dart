@@ -1,11 +1,21 @@
 String getLibMain() => '''
 // Coming soon
-import 'dart:html' ;
+import 'binder/bootstrap.dart';
 
 void main() {
-  document.body?.children.addAll([
-    DivElement()..text = 'Hello World, from Dart!',
-  ]);
+  runApp(MyApp());
+ 
+}
+
+class MyApp extends Widget {
+  @override
+  Element toElement() {
+    return BootstrapContainer(
+      child: BootstrapCenter(
+        child: BootstrapText('Hello World'),
+      ),
+    ).toElement();
+  }
 }
 ''';	
 
