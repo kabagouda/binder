@@ -1,12 +1,12 @@
 import 'bootstrap.dart';
 
-class ElevatedButton extends Widget {
+class BootstrapElevatedButton extends Widget {
   final Key? key;
   final Widget child;
   final VoidCallback onPressed;
   final BootstrapButtonStyle? style;
   final bool? disabled;
-  const ElevatedButton({
+  const BootstrapElevatedButton({
     this.key,
     required this.child,
     required this.onPressed,
@@ -18,11 +18,16 @@ class ElevatedButton extends Widget {
   Element toElement() {
     Element element = AnchorElement();
     element.classes.add('btn'); // Most important
-    element.children.add(child
-        .toElement()); // because with buttons child and onPressed are required
     if (key != null) {
       element.id = key!.value;
     }
+    element.children.add(child
+        .toElement()); // because with buttons child and onPressed are required
+    element.onClick.listen((event) {
+      if (disabled == false) { // if disabled is true, then the button is disabled
+        onPressed(); // because with buttons child and onPressed are required
+      }
+    });
     if (style != null) {
       if (style?.color != null) {
         // to avoid light color text when background is also light
