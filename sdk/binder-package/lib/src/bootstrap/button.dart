@@ -73,12 +73,69 @@ class BootstrapButtonSizeOptions {
 
 //---------------------------------Others buttons
 
-class OutlinedButton extends Widget {
+
+class BootstrapOutlinedButton extends Widget {
   final Key? key;
   final Widget child;
   final VoidCallback onPressed;
   final BootstrapButtonStyle? style;
-  const OutlinedButton({
+  final bool? disabled;
+  const BootstrapOutlinedButton({
+    this.key,
+    required this.child,
+    required this.onPressed,
+    this.style,
+    this.disabled = false,
+  });
+
+  @override
+  Element toElement() {
+    Element element = AnchorElement();
+    element.classes.add('btn'); // Most important
+    if (key != null) {
+      element.id = key!.value;
+    }
+    element.children.add(child
+        .toElement()); // because with buttons child and onPressed are required
+    element.onClick.listen((event) {
+      if (disabled == false) { // if disabled is true, then the button is disabled
+        onPressed(); // because with buttons child and onPressed are required
+      }
+    });
+    if (style != null) {
+      if (style?.color != null) {
+        // to avoid light color text when background is also light
+        if (style?.color?.value == 'light') {
+          element.classes.add('text-dark');
+        } else {
+          element.classes.add('text-white');
+        }
+        element.classes.add('btn-outline-${style!.color!.value}');
+      }
+      if (style?.size != null) {
+        element.classes.add('btn-${style!.size!.value}');
+      }
+    }
+    if (disabled != null) {
+      if (disabled == true) {
+        element.classes.add('disabled');
+      }
+    }
+    return element;
+  }
+}
+
+
+
+
+
+/* 1 first
+class BootstrapOutlinedButton extends Widget {
+  final Key? key;
+  final Widget child;
+  final VoidCallback onPressed;
+  final BootstrapButtonStyle? style;
+  const BootstrapOutlinedButton({
     this.key,
     required this.child,
     required this.onPressed,
@@ -89,11 +146,16 @@ class OutlinedButton extends Widget {
   Element toElement() {
     Element element = AnchorElement();
     element.classes.add('btn'); // Most important
-    element.children.add(child
-        .toElement()); // because with buttons child and onPressed are required
     if (key != null) {
       element.id = key!.value;
     }
+     element.children.add(child
+        .toElement()); // because with buttons child and onPressed are required
+    element.onClick.listen((event) {
+      if (disabled == false) { // if disabled is true, then the button is disabled
+        onPressed(); // because with buttons child and onPressed are required
+      }
+    });
     if (style != null) {
       if (style?.color != null) {
         // to avoid light color text when background is also light
@@ -111,3 +173,5 @@ class OutlinedButton extends Widget {
     return element;
   }
 }
+
+*/
