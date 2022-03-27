@@ -1,4 +1,4 @@
-# Binder Framework
+# **Binder Framework**
 
 [**Binder**](https://binder.kabagouda.com) is a web framework that can be used to create web apps and APIs .
 
@@ -6,7 +6,7 @@
   <img  width ="600" src="https://user-images.githubusercontent.com/64534846/158489733-67af3a32-5584-44c6-9ffe-043cb1c5ca8f.png" alt="Binder logo">
 </p>
 
-## Get started
+## **Get started** 
 
 <!-- ![binger logo](https://user-images.githubusercontent.com/64534846/158489733-67af3a32-5584-44c6-9ffe-043cb1c5ca8f.png) -->
 
@@ -16,7 +16,7 @@
 
   Or download Dart SDK and add binder-bin from binder github folder in the Dart SDK . Then, active it by doing  `dart pub global activate --source path binder-bin` in the root.
 
-**Note :**
+### **Note :**
 
     If you already have an old dart sdk in your environment variable, please remove it before adding the binder one otherwise there will be a conflict. The SDK of binder already contains the SDK of Dart. 
 
@@ -30,7 +30,7 @@ To run the project , use :
 
 `binder run`
 
-An example of project :
+**An example of project** :
 
 ```dart
 import 'package:binder/bootstrap.dart';
