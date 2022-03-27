@@ -1,6 +1,8 @@
 # **Binder Framework**
 
-[**Binder**](https://binder.kabagouda.com) is a web framework that can be used to create web apps and APIs .
+[**Binder**](https://binder.kabagouda.com) is a web framework that can be used to create web apps and APIs . 
+
+It's like `React + Express` or any combination of front-end framework (Vue, Angular, etc.) and  a back-end framework (Laravel, Django, etc.). All-in-one in a very simple and powerful way. Binder 🔥 .
 
 <p align="center" >
   <img  width ="600" src="https://user-images.githubusercontent.com/64534846/158489733-67af3a32-5584-44c6-9ffe-043cb1c5ca8f.png" alt="Binder logo">
