@@ -3,9 +3,9 @@ import 'key.dart';
 import 'widget.dart';
 
 
-class BootstrapDivider extends Widget {
+class Divider extends Widget {
   final Key? key;
-  const BootstrapDivider({
+  const Divider({
     this.key,
   });
   @override
