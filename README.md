@@ -11,22 +11,27 @@
 <!-- ![binger logo](https://user-images.githubusercontent.com/64534846/158489733-67af3a32-5584-44c6-9ffe-043cb1c5ca8f.png) -->
 
   First of all, we need to download Binder SDK framework.
-  If you are using windows , download it directly [here]('https://github.com/kabagouda/binder/releases/download/binder-sdk-windows/binder-sdk.rar')
-  Add it(path to `binder-sdk/bin` ) in your environment path .If everything is ok , if you type `binder` in your CMD it will work , so enjoy it .
+  If you are using windows , download it directly [here]('https://github.com/kabagouda/binder/releases/download/binder-sdk-windows/binder-sdk.rar') . 
+  Add it (path to `binder-sdk/bin` ) in your **Environment variable path** .If everything is ok , if you type `binder` in your CMD it will work fine , so enjoy it .
 
-  Binder SDK :
+### **Download Binder SDK :**
+
   -[Windows]('https://github.com/kabagouda/binder/releases/download/binder-sdk-windows/binder-sdk.rar')
+
   -MacOS (soon)
+
   -Linux (soon)
 
- For others plaforms (linux and macOS users),  you can use it by doing this:
- 
+**Alternative (sdk/binder-bin) for others plaforms  (linux and macOS users):**,  
+
+You can use it by doing this:
+
 Download [Dart SDK from dart official website]('https://dart.dev/get-dart/archive#stable-channel') for your plaform and add binder-bin from binder github folder in the Dart SDK . Then, active it by doing  `dart pub global activate --source path binder-bin` in the root.
 It works on all platforms .
 
 ### **Note :**
 
-    If you already have an old dart sdk in your environment variable, please remove it before adding the binder one otherwise there will be a conflict. The SDK of binder already contains the SDK of Dart. 
+If you already have an old dart sdk in your environment variable, please remove it before adding the binder one otherwise there will be a conflict. The SDK of binder already contains the SDK of Dart. 
 
 After the installation , you can use it  
 
