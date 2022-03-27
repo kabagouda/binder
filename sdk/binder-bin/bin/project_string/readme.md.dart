@@ -20,6 +20,6 @@ String getREADMEMd() => '''
 
 ## Author
 
-[Kab Agouda]('https://twitter.com/kabagouda')
+[Kab Agouda](https://twitter.com/kabagouda)
 
 ''';
