@@ -16,11 +16,11 @@
 
 ### **Download Binder SDK :**
 
-  -[Windows]('https://github.com/kabagouda/binder/releases/download/binder-sdk-windows/binder-sdk.rar')
+  - [Windows]('https://github.com/kabagouda/binder/releases/download/binder-sdk-windows/binder-sdk.rar')
 
-  -MacOS (soon)
+  - MacOS (soon)
 
-  -Linux (soon)
+  - Linux (soon)
 
 **Alternative (sdk/binder-bin) for others plaforms  (linux and macOS users):**,  
 
